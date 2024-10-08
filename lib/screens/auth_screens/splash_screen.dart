@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:marvel/helpers/constants.dart';
 import 'package:marvel/helpers/get_size.dart';
+import 'package:marvel/screens/auth_screens/login_screen.dart';
 import 'package:marvel/screens/home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     Timer(Duration(seconds: 3), () {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
     });
     super.initState();
   }
