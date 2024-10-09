@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:marvel/helpers/constants.dart';
 import 'package:marvel/helpers/get_size.dart';
+import 'package:marvel/main.dart';
+import 'package:marvel/providers/auth_provider.dart';
 import 'package:marvel/providers/movies_providers.dart';
 import 'package:marvel/widgets/cards/movie_card.dart';
 import 'package:marvel/widgets/icons/custome_icon_button.dart';
@@ -25,7 +27,24 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Consumer<MoviesProviders>(builder: (context, movieConsumer, _) {
       return Scaffold(
-        drawer: Drawer(),
+        drawer: Drawer(
+          child:SafeArea(
+            child: Column(
+              children: [
+                  TextButton(onPressed: (){
+                    Provider.of<AuthProvider>(context,listen: false).logout().then((onValue){
+                      if(onValue){
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>ScreenRouter()), (route) => false,);
+                      }
+                      else{
+                        print("FAILD");
+                      }
+                    });
+                  }, child:Text("LogOut"))
+              ],
+            ),
+          ),
+        ),
         appBar: AppBar(
           bottom: PreferredSize(
               preferredSize: Size.zero,

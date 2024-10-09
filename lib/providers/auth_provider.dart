@@ -55,7 +55,19 @@ class AuthProvider extends BaseProvider {
     return false;
   }
 
-  logout() {}
+  Future<bool>  logout() async {
+
+    final res = await api.post("https://lati.kudo.ly/api/logout",{});
+    
+    print(res.body);
+    print(res.headers);
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        pref.clear();
+
+    return true;
+
+  }
+
   renewtoken() {}
   getMe() {}
 }

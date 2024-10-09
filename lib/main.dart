@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<MoviesProviders>(
           create: (_) => MoviesProviders(),
         ),
-        ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider())
+        ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()..initializeAuthProvider())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

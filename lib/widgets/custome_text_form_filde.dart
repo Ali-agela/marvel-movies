@@ -1,21 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:marvel/helpers/constants.dart';
 
-class CustomeTextFormFiled extends StatelessWidget {
-  const CustomeTextFormFiled({super.key, required this.label, this.hint,  required this.textEditingController, required this.validate});
-  final String? label ;
+class CustomeTextFormFiled extends StatefulWidget {
+  const CustomeTextFormFiled(
+      {super.key,
+      required this.label,
+      this.hint,
+      required this.textEditingController,
+      required this.validate,
+      this.isEn = true});
+  final String? label;
   final String? hint;
-  final TextEditingController  textEditingController;
-  final FormFieldValidator<String?> validate ;
+  final TextEditingController textEditingController;
+  final FormFieldValidator<String?> validate;
+  final isEn;
 
+  @override
+  State<CustomeTextFormFiled> createState() => _CustomeTextFormFiledState();
+}
+
+class _CustomeTextFormFiledState extends State<CustomeTextFormFiled> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: textEditingController,
-      validator: validate,
+      onChanged: (value) {
+        value = widget.textEditingController.text;
+      },
+      controller: widget.textEditingController,
+      validator: widget.validate,
+      enabled: widget.isEn,
       decoration: InputDecoration(
-        hintText: hint,
-        label: label==null?null : Text(label!),
+        hintText: widget.hint,
+        label: widget.label == null ? null : Text(widget.label!),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         focusColor: mainColor,
       ),

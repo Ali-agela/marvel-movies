@@ -15,15 +15,15 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  TextEditingController genderController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController PhoneController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
+  List<String> genders = ['male', 'female'];
+  GlobalKey<FormState> formkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    TextEditingController genderController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
-    TextEditingController nameController = TextEditingController();
-    TextEditingController PhoneController = TextEditingController();
-    TextEditingController dateController = TextEditingController();
-
-    GlobalKey<FormState> formkey = GlobalKey<FormState>();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -81,31 +81,63 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 SizedBox(
                   height: 25,
                 ),
-                CustomeTextFormFiled(
-                    label: "Gender",
-                    textEditingController: genderController,
-                    validate: (v) {
-                      if (v!.isEmpty) {
-                        return "gsenser is requred ";
-                      }
-                      if (v != 'male' && v != 'female') {
-                        return "male or female ";
-                      }
-                      return null;
-                    }),
+                PopupMenuButton(
+                  itemBuilder: (context) {
+                    return List<PopupMenuItem>.from(
+                        genders.map((e) => PopupMenuItem(
+                              onTap: () {
+                                setState(() {
+                                  genderController.text = e;
+                                  print(genderController.text);
+                                });
+                              },
+                              child: Text(e),
+                              value: e,
+                            )));
+                  },
+                  child: CustomeTextFormFiled(
+                      isEn: false,
+                      label: "Gender",
+                      textEditingController: genderController,
+                      validate: (v) {
+                        if (v!.isEmpty) {
+                          return "gsenser is requred ";
+                        }
+                        if (v != 'male' && v != 'female') {
+                          return "male or female ";
+                        }
+                        return null;
+                      }),
+                ),
                 SizedBox(
                   height: 25,
                 ),
-                CustomeTextFormFiled(
-                    label: "Date",
-                    hint: 'yyyy-mm-dd',
-                    textEditingController: dateController,
-                    validate: (v) {
-                      if (v!.isEmpty) {
-                        return "password is requred ";
-                      }
-                      return null;
-                    }),
+                GestureDetector(
+                  onTap: () {
+                    showDatePicker(
+                            context: context,
+                            firstDate: DateTime(1997),
+                            lastDate: DateTime(20060))
+                        .then((s) {
+                      setState(() {
+                        dateController.text =
+                            s!.toIso8601String().substring(0, 10);
+                        print(dateController.text);
+                      });
+                    });
+                  },
+                  child: CustomeTextFormFiled(
+                      isEn: false,
+                      label: "Date",
+                      hint: 'yyyy-mm-dd',
+                      textEditingController: dateController,
+                      validate: (v) {
+                        if (v!.isEmpty) {
+                          return "password is requred ";
+                        }
+                        return null;
+                      }),
+                ),
                 SizedBox(
                   height: 25,
                 ),
@@ -123,6 +155,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       }).then((onValue) {
                         if (onValue) {
                           Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("created ")));
                         }
                       });
                     },
