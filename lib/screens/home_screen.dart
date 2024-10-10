@@ -4,6 +4,7 @@ import 'package:marvel/helpers/get_size.dart';
 import 'package:marvel/main.dart';
 import 'package:marvel/providers/auth_provider.dart';
 import 'package:marvel/providers/movies_providers.dart';
+import 'package:marvel/screens/auth_screens/profile_screen.dart';
 import 'package:marvel/widgets/cards/movie_card.dart';
 import 'package:marvel/widgets/icons/custome_icon_button.dart';
 import 'package:provider/provider.dart';
@@ -28,19 +29,27 @@ class _HomeScreenState extends State<HomeScreen> {
     return Consumer<MoviesProviders>(builder: (context, movieConsumer, _) {
       return Scaffold(
         drawer: Drawer(
-          child:SafeArea(
+          child: SafeArea(
             child: Column(
               children: [
-                  TextButton(onPressed: (){
-                    Provider.of<AuthProvider>(context,listen: false).logout().then((onValue){
-                      if(onValue){
-                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>ScreenRouter()), (route) => false,);
-                      }
-                      else{
-                        print("FAILD");
-                      }
-                    });
-                  }, child:Text("LogOut"))
+                TextButton(
+                    onPressed: () {
+                      Provider.of<AuthProvider>(context, listen: false)
+                          .logout()
+                          .then((onValue) {
+                        if (onValue) {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ScreenRouter()),
+                            (route) => false,
+                          );
+                        } else {
+                          print("FAILD");
+                        }
+                      });
+                    },
+                    child: Text("LogOut"))
               ],
             ),
           ),
@@ -61,7 +70,12 @@ class _HomeScreenState extends State<HomeScreen> {
             CustomIconButton(
                 asset: "assets/icons/FavoriteButton.png", onTap: () {}),
             SizedBox(width: 8),
-            CustomIconButton(asset: "assets/icons/InboxIcon.png", onTap: () {}),
+            CustomIconButton(
+                asset: "assets/icons/InboxIcon.png",
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (builder) => ProfileScreen()));
+                }),
             SizedBox(width: 8),
           ],
         ),
