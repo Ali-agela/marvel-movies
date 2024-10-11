@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -80,5 +82,36 @@ class Api {
       print(response.statusCode);
       return false;
     }
+  }
+
+  Future<Response> upload(File file, String url) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("token");
+    var decodedToken = jsonDecode(token!);
+    var request = http.MultipartRequest('POST', Uri.parse(url));
+    request.headers.addAll({
+      "Accept": 'application/json',
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer $decodedToken"
+    });
+    request.files.add(await http.MultipartFile.fromPath('img', file.path));
+
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+
+    if (kDebugMode) {
+      print("UPLOAD URL : $url");
+      print("UPLOAD STATUS CODE : ${response.statusCode}");
+      print("UPLOAD RESPONSE : ${response.body}");
+    }
+
+    if (response.statusCode == 401) {
+      await refreshToken().then((refreshed) {
+        if (refreshed) {
+          upload(file, url);
+        }
+      });
+    }
+    return response;
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:marvel/models/user_model.dart';
 import 'package:marvel/providers/base_provider.dart';
@@ -15,9 +16,7 @@ class AuthProvider extends BaseProvider {
     String? token = pref.getString("token");
     print("THE TOKEN  $token");
     isAuthed = (token != null);
-    if (isAuthed) {
-      renewtoken();
-    }
+
     setIsFaild(false);
   }
 
@@ -70,9 +69,7 @@ class AuthProvider extends BaseProvider {
     return true;
   }
 
-  reNewToken() {
-
-  }
+  reNewToken() {}
   Future<UserModel?> getMe() async {
     setIsLoading(true);
     print(55555555);
@@ -82,7 +79,7 @@ class AuthProvider extends BaseProvider {
 
     if (res.statusCode == 200) {
       user = UserModel.fromJson(jsonDecode(res.body)['data']);
-      print(user == null ? null : user!.name);
+      print(user == null ? null : user!.toJson());
       setIsLoading(false);
       return user;
     } else {
@@ -92,20 +89,15 @@ class AuthProvider extends BaseProvider {
     }
   }
 
-  Future<bool> updateUser(UserModel userModel) async {
+  Future<bool> updateUser(Map body) async {
     setIsLoading(true);
-    final res = await api.put("https://lati.kudo.ly/api/users/update", {
-      "name": "${userModel.name}",
-      "phone": "${userModel.phone}",
-      "avatar_url": "${userModel.avatarUrl}",
-      "DOB": "${userModel.dob}",
-      "gender": "${userModel.gender}"
-    });
+    final res = await api.put("https://lati.kudo.ly/api/users/update", body);
 
     if (res.statusCode == 200) {
       print(555555555555555);
       print(res.body);
       setIsLoading(false);
+      getMe();
       return true;
     } else {
       print(44444444444);
@@ -113,5 +105,15 @@ class AuthProvider extends BaseProvider {
       setIsLoading(false);
       return false;
     }
+  }
+
+  updateUserPhoto(File file) async {
+    await api.upload(file, "https://lati.kudo.ly/api/uploader").then((res) {
+      if (res.statusCode == 200) {
+        UserModel newUM = user!;
+        newUM.avatarUrl = jsonDecode(res.body)['image_name'];
+        updateUser({'avatar_url': newUM.avatarUrl.toString()});
+      }
+    });
   }
 }

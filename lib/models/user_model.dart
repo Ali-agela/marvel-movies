@@ -4,10 +4,10 @@ class UserModel {
   int id;
   String name;
   String phone;
-  dynamic serverId;
+  String? serverId;
   DateTime dob;
   String gender;
-  dynamic avatarUrl;
+  String? avatarUrl;
   DateTime createdAt;
   DateTime updatedAt;
 
@@ -15,10 +15,10 @@ class UserModel {
     required this.id,
     required this.name,
     required this.phone,
-    required this.serverId,
+    this.serverId,
     required this.dob,
     required this.gender,
-    required this.avatarUrl,
+    this.avatarUrl,
     required this.createdAt,
     required this.updatedAt,
   });
